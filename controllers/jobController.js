@@ -1,4 +1,4 @@
-import Job from "../models/Job";
+import Job from "../models/Job.js";
 
 
 export const createJob = async (req, res) => {
@@ -39,6 +39,19 @@ export const getJob = async (req, res) => {
         return res.status(200).json({ job });
     }
     catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
+export const getJobById = async (req, res) => {
+    try {
+        const { id: jobId } = req.params;
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({ message: `No job with id: ${jobId}` });
+        }
+        return res.status(200).json({ job });
+    } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 }

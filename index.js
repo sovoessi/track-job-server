@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
+import jobRoutes from './routes/jobRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -19,9 +21,8 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/v1/users', userRoutes);
-// app.use('/api/v1/jobs', jobRoutes); // Uncomment when job routes are implemented
-// app.use('/api/v1/auth', authRoutes); // Uncomment when auth routes are implemented
-
+app.use('/api/v1/jobs', jobRoutes);
+app.use('/api/v1/auth', authRoutes);
 
 const startServer = async () => {
     try {
