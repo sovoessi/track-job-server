@@ -1,5 +1,7 @@
 import User from '../models/User.js';
 
+
+
 // @desc    create a new user
 // @route   POST /api/v1/users
 // @access  Public

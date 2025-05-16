@@ -1,42 +1,69 @@
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const createToken = (user) => {
+	return jwt.sign(
+		{ userId: user._id, name: user.name },
+		process.env.JWT_SECRET,
+		{
+			expiresIn: process.env.JWT_LIFETIME,
+		}
+	);
+};
 
 export const register = async (req, res) => {
-    const { name, email, password } = req.body;
+	const { name, email, password } = req.body;
 
-    if (!name || !email || !password) {
-        return res.status(400).json({ message: "Please provide all values" });
-    }
+	if (!name || !email || !password) {
+		return res.status(400).json({ message: "Please provide all values" });
+	}
 
-    const userAlreadyExists = await User.findOne({ email });
+	const userAlreadyExists = await User.findOne({ email });
 
-    if (userAlreadyExists) {
-        return res.status(400).json({ message: "User already exists" });
-    }
+	if (userAlreadyExists) {
+		return res.status(400).json({ message: "User already exists" });
+	}
 
-    const user = await User.create({ name, email, password });
+	const user = await User.create({ name, email, password });
 
-    return res.status(201).json({ user });
-}
+    const token = createToken(user);
+    res.cookie("token", token, {    
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
 
+	return res.status(201).json({ user, token });
+};
 
 export const login = async (req, res) => {
-    const { email, password } = req.body;
+	const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ message: "Please provide all values" });
-    }
+	if (!email || !password) {
+		return res.status(400).json({ message: "Please provide all values" });
+	}
 
-    const user = await User.findOne({ email });
+	const user = await User.findOne({ email });
 
-    if (!user) {
-        return res.status(401).json({ message: "Invalid credentials" });
-    }
+	if (!user) {
+		return res.status(401).json({ message: "Invalid credentials" });
+	}
 
-    const isPasswordCorrect = await user.comparePassword(password);
+	const isPasswordCorrect = await user.comparePassword(password);
 
-    if (!isPasswordCorrect) {
-        return res.status(401).json({ message: "Invalid credentials" });
-    }
+	if (!isPasswordCorrect) {
+		return res.status(401).json({ message: "Invalid credentials" });
+	}
 
-    return res.status(200).json({ user });
-}
+    const token = createToken(user);
+    res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000, // 1 day
+    });
+
+	return res.status(200).json({ user, token });
+};
