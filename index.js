@@ -6,6 +6,8 @@ import userRoutes from './routes/userRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 
+import {authenticate} from './middlewares/authMiddleware.js';
+
 dotenv.config();
 
 const app = express();
@@ -21,7 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/jobs', jobRoutes);
+app.use('/api/v1/jobs',authenticate, jobRoutes);
 app.use('/api/v1/auth', authRoutes);
 
 const startServer = async () => {
