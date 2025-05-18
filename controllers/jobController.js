@@ -1,12 +1,16 @@
 import Job from "../models/Job.js";
 
-
 export const createJob = async (req, res) => {
     try {
         const { company, position } = req.body;
         if (!company || !position) {
             return res.status(400).json({ message: "Please provide all values" });
         }
+
+        if (!req.user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        
         const job = await Job.create({
             ...req.body,
             createdBy: req.user.userId,

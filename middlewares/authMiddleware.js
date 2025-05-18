@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
@@ -14,6 +14,11 @@ export const authenticate = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = await User.findById(decoded.userId).select("-password");
+      
+        req.user = {
+            ...req.user._doc,
+            userId: req.user._id
+         };
         next();
     } catch (error) {
         return res.status(401).json({ message: "Unauthorized" });

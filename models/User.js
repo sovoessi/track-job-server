@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -26,7 +25,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please provide a password"],
         minLength: 6,
-        select: false,
     },
     role: {
         type: String,
