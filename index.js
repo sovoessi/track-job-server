@@ -8,7 +8,7 @@ import userRoutes from './routes/userRoutes.js';
 import jobRoutes from './routes/jobRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 
-import {authenticate} from './middlewares/authMiddleware.js';
+import {authenticate, authorizeAdmin} from './middlewares/authMiddleware.js';
 
 dotenv.config();
 
@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
 
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/jobs',authenticate, jobRoutes);
-app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/auth',authorizeAdmin, authRoutes);
 
 const startServer = async () => {
     try {
