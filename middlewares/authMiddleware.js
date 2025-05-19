@@ -33,3 +33,11 @@ export const authorizeAdmin = (req, res, next) => {
     }
     next();
 }
+
+// Middleware to protect routes
+export const protectRoute = (req, res, next) => {
+    if (!req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    next();
+}

@@ -56,3 +56,18 @@ export const login = async (req, res) => {
 
 	return res.status(200).json({ user, token });
 };
+
+export const logout = async (req, res) => {
+	// Clear the cookie
+	res.clearCookie("token");
+	return res.status(200).json({ message: "Logged out successfully" });
+}
+
+export const getMe = async (req, res) => {
+	const user = req.user;
+	// Check if user is authenticated
+	if (!user) {
+		return res.status(401).json({ message: "Unauthorized" });
+	}	
+	return res.status(200).json({ user });
+}
